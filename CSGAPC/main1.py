@@ -11,7 +11,7 @@ def main1():
     # txtname = r'\\192.168.218.65\bpapimsdata\CSGEXPORT\CSGAPCValues.Txt'
     # ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
-    print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+    print(datetime.now().strftime("%Y/%m/%d %I:%M:%S %p"))
     print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
     print('当前进程的内存使用：%.4f GB' %
           (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024 / 1024))
