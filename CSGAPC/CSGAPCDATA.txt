@@ -1,0 +1,4 @@
+import DDE
+dde = DDE.DDEClient("JSPIMSTEST", "JSPIMSTEST")
+ar = dde.request("Root.CN.CCJS_TANK4.TANK.TI1171.Value")    
+print(ar)
