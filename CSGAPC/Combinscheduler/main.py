@@ -51,6 +51,7 @@ def main1():
     txtname = r'\\192.168.218.65\bpapimsdata\CSGEXPORT\CSGAPCValues.Txt'
     ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
+    print("CSGAPC程式运行OK")
     print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
     print('当前进程的内存使用：%.4f GB' %
@@ -66,6 +67,7 @@ def main2():
     txtname = r'\\192.168.218.65\bpapimsdata\ELEXPORT\ELAPCValues.Txt'
     ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
+    print("ELAPC程式运行OK")
     print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
     print('当前进程的内存使用：%.4f GB' %

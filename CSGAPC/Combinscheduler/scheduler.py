@@ -5,7 +5,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import schedule
 import psutil
 from main import main1, main2
-from RealtimeValueFromDatahub import main3
+from RealtimeValueFromDatahubExcel import main3
 
 
 def ramused():
@@ -32,8 +32,10 @@ def main():
     job_defaults = {'max_instances': 10}
     scheduler = BlockingScheduler(timezone='MST', job_defaults=job_defaults)
     scheduler.add_job(job1, 'interval', seconds=120)
-    scheduler.add_job(job2, 'interval', seconds=120)
-    scheduler.add_job(job3, 'interval', seconds=7)
+    time.sleep(1)
+    scheduler.add_job(job2, 'interval', seconds=119)
+    time.sleep(1)
+    scheduler.add_job(job3, 'interval', seconds=5)
     try:
         scheduler.start()
     except Exception as err:
