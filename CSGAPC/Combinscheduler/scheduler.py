@@ -4,7 +4,7 @@ import os
 from apscheduler.schedulers.blocking import BlockingScheduler
 import schedule
 import psutil
-from main import main1, main2
+from main import main1, main2, main4, main5, main6
 from RealtimeValueFromDatahubExcel import main3
 
 
@@ -28,12 +28,30 @@ def job3():
     main3()
 
 
+def job4():
+    main4()
+
+
+def job5():
+    main5()
+
+
+def job6():
+    main6()
+
+
 def main():
     job_defaults = {'max_instances': 10}
     scheduler = BlockingScheduler(timezone='MST', job_defaults=job_defaults)
     scheduler.add_job(job1, 'interval', seconds=120)
     time.sleep(1)
     scheduler.add_job(job2, 'interval', seconds=119)
+    time.sleep(1)
+    # scheduler.add_job(job4, 'interval', seconds=119)
+    # time.sleep(1)
+    # scheduler.add_job(job5, 'interval', seconds=119)
+    # time.sleep(1)
+    # scheduler.add_job(job6, 'interval', seconds=119)
     time.sleep(1)
     scheduler.add_job(job3, 'interval', seconds=5)
     try:

@@ -5,11 +5,13 @@ import os
 from apscheduler.schedulers.blocking import BlockingScheduler
 import schedule
 import psutil
+import pythoncom
+from win32com.client import DispatchEx
 
 
 def timefunc():
     # SpotTime = datetime.now().strftime("%m/%d/%Y %H:%M:%S") #24小时制
-    SpotTime = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p") #12小时制
+    SpotTime = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")  # 12小时制
     return SpotTime
 
 
@@ -24,26 +26,44 @@ def Opentxt(file):
 
 
 def ddefunc(datahubname, topic, filename, txtname):
+    pythoncom.CoInitialize()
+    xlApp = DispatchEx("Excel.Application")
+    xlApp.Visible = 0  # 隐藏
+    xlApp.Application.DisplayAlerts = 0  # 禁止弹出会话
+    nChan = xlApp.Application.DDEInitiate(datahubname, topic)  # datahub名称
     arrname = Opentxt(filename).split(",")  # tagname
     timestamp = timefunc()  # timestamp
-    dde = DDE.DDEClient(datahubname, topic)
     if(os.path.exists(txtname)):
         os.remove(txtname)
     for i in arrname:
-        # repi = i.replace(".value", "")
-        DDEVALUE = dde.request(i)
-        # print(DDEVALUE)
+        DDEVALUE = xlApp.DDErequest(nChan, i)
+        if not DDEVALUE[0]:
+            linex = 'TAGNAME='+i.replace(".Value", "") + '\n'
+            liney = 'ITEM=VALUE,VALUE={},TIMESTAMP={},QUALITY=192'.format(
+                0, timestamp) + '\n'
+            linez = linex+liney
+        else:
+            # dde = DDE.DDEClient(datahubname, topic)
+            # if(os.path.exists(txtname)):
+            #     os.remove(txtname)
+            # for i in arrname:
+            #     # repi = i.replace(".value", "")
+            #     DDEVALUE = dde.request(i)
+            # print(DDEVALUE)
 
-        linex = 'TAGNAME='+i.replace(".Value", "") + '\n'
-        liney = 'ITEM=VALUE,VALUE={},TIMESTAMP={},QUALITY=192'.format(
-            DDEVALUE, timestamp) + '\n'
-        linez = linex+liney
-#             print(linez)
+            linex = 'TAGNAME='+i.replace(".Value", "") + '\n'
+            liney = 'ITEM=VALUE,VALUE={},TIMESTAMP={},QUALITY=192'.format(
+                DDEVALUE[0], timestamp) + '\n'
+            linez = linex+liney
+    #             print(linez)
         with open(txtname, "a+") as f:
             f.write(linez)
+    xlApp.Quit()
+    pythoncom.CoUninitialize()
+
+# CSGAPCValues
 
 
-#CSGAPCValues
 def main1():
     datahubname = "JSPIMSTEST"
     topic = "JSPIMSTEST"
@@ -59,7 +79,7 @@ def main1():
     print("*****"*5)
 
 
-#ELAPCVALUES
+# ELAPCVALUES
 def main2():
     datahubname = "JSPIMSTEST"
     topic = "JSPIMSTEST"
@@ -68,6 +88,51 @@ def main2():
     ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
     print("ELAPC程式运行OK")
+    print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+    print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
+    print('当前进程的内存使用：%.4f GB' %
+          (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024 / 1024))
+    print("*****"*5)
+
+
+def main4():
+    datahubname = "JSPIMSTEST"
+    topic = "JSPIMSTEST"
+    filename = r".\APCTags.txt"
+    txtname = r'\\192.168.218.65\pims_tc\APCValues.Txt'
+    ddefunc(datahubname, topic, filename, txtname)
+    print("*****"*5)
+    print("APC程式运行OK")
+    print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+    print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
+    print('当前进程的内存使用：%.4f GB' %
+          (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024 / 1024))
+    print("*****"*5)
+
+
+def main5():
+    datahubname = "JSPIMSTEST"
+    topic = "JSPIMSTEST"
+    filename = r".\ProcessAPCTags.txt"
+    txtname = r'\\192.168.218.65\pims_tc\ProcessEXPORT\ProcessAPCValues.Txt'
+    ddefunc(datahubname, topic, filename, txtname)
+    print("*****"*5)
+    print("ProcessAPC程式运行OK")
+    print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+    print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
+    print('当前进程的内存使用：%.4f GB' %
+          (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024 / 1024))
+    print("*****"*5)
+
+
+def main6():
+    datahubname = "JSPIMSTEST"
+    topic = "JSPIMSTEST"
+    filename = r".\TAIPEIAPCTags.txt"
+    txtname = r'\\192.168.218.241\pims\TAIPEIAPCValues.Txt'
+    ddefunc(datahubname, topic, filename, txtname)
+    print("*****"*5)
+    print("taibeiAPC程式运行OK")
     print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     print('当前进程的内存使用：', psutil.Process(os.getpid()).memory_info().rss)
     print('当前进程的内存使用：%.4f GB' %
@@ -87,10 +152,12 @@ def job2():
     main1()
     time.sleep(1)
     main2()
+    time.sleep(1)
+    main4()
 
 
 def main():
-    job_defaults = { 'max_instances': 10 }
+    job_defaults = {'max_instances': 10}
     scheduler = BlockingScheduler(timezone='MST', job_defaults=job_defaults)
     scheduler.add_job(job2, 'interval', seconds=60)
     try:
