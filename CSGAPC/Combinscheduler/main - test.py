@@ -1,8 +1,6 @@
 from datetime import datetime
 import time
-import DDE
 import os
-import shutil
 from apscheduler.schedulers.blocking import BlockingScheduler
 import schedule
 import psutil
@@ -100,7 +98,7 @@ def main4():
     datahubname = "JSPIMSTEST"
     topic = "JSPIMSTEST"
     filename = r".\APCTags.txt"
-    txtname = r'\\192.168.218.65\pims_tc\APCValues.Txt'
+    txtname = r'\\192.168.218.65\pims_tc\APCValues1.Txt'
     ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
     print("APC程式运行OK")
@@ -115,9 +113,8 @@ def main5():
     datahubname = "JSPIMSTEST"
     topic = "JSPIMSTEST"
     filename = r".\ProcessAPCTags.txt"
-    txtname = r'\\192.168.218.65\pims_tc\ProcessEXPORT\ProcessAPCValues.Txt'
+    txtname = r'\\192.168.218.65\pims_tc\ProcessEXPORT\ProcessAPCValues1.Txt'
     ddefunc(datahubname, topic, filename, txtname)
-    copy_files()
     print("*****"*5)
     print("ProcessAPC程式运行OK")
     print(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
@@ -127,18 +124,11 @@ def main5():
     print("*****"*5)
 
 
-def copy_files():  # 定义函数名称
-    path1 = r'\\192.168.218.65\pims_tc\ProcessEXPORT\ProcessAPCValues.Txt'
-    path2 = r'\\192.168.218.65\pims_tc\APCValues.Txt'
-    shutil.copyfile(path1, path2)
-    print('复制APC程式OK')
-
-
 def main6():
     datahubname = "JSPIMSTEST"
     topic = "JSPIMSTEST"
     filename = r".\TAIPEIAPCTags.txt"
-    txtname = r'\\192.168.218.241\pims\TAIPEIAPCValues.Txt'
+    txtname = r'\\192.168.218.241\pims\TAIPEIAPCValues1.Txt'
     ddefunc(datahubname, topic, filename, txtname)
     print("*****"*5)
     print("taibeiAPC程式运行OK")
@@ -158,17 +148,17 @@ def ramused():
 
 
 def job2():
-    main1()
-    time.sleep(1)
-    main2()
-    time.sleep(1)
     main4()
+    time.sleep(1)
+    main5()
+    time.sleep(1)
+    main6()
 
 
 def main():
     job_defaults = {'max_instances': 10}
     scheduler = BlockingScheduler(timezone='MST', job_defaults=job_defaults)
-    scheduler.add_job(job2, 'interval', seconds=60)
+    scheduler.add_job(job2, 'interval', seconds=120)
     try:
         scheduler.start()
     except Exception as err:
@@ -177,4 +167,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main4()
+    # time.sleep(1)
+    # main5()
+    # time.sleep(1)
+    main6()

@@ -49,9 +49,9 @@ def main():
     time.sleep(1)
     # scheduler.add_job(job4, 'interval', seconds=119)
     # time.sleep(1)
-    # scheduler.add_job(job5, 'interval', seconds=119)
-    # time.sleep(1)
-    # scheduler.add_job(job6, 'interval', seconds=119)
+    scheduler.add_job(job5, 'interval', seconds=119)
+    time.sleep(1)
+    scheduler.add_job(job6, 'interval', seconds=119)
     time.sleep(1)
     scheduler.add_job(job3, 'interval', seconds=5)
     try:
